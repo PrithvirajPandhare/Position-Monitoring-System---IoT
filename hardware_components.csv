@@ -1,0 +1,8 @@
+name,quantity,purpose
+ESP32 Development Board,1,Main microcontroller with WiFi
+MPU6050 IMU Sensor,1,6-axis motion sensing (3-axis accelerometer + 3-axis gyroscope)
+SSD1306 OLED Display (128x64),1,Real-time data display via I2C
+Breadboard,1,Prototyping connections
+Jumper Wires (Male-to-Male),10-15,Component connections
+USB Cable (Micro-USB),1,Programming and power supply
+External Power Supply (Optional),1,Standalone operation (5V/3.3V)

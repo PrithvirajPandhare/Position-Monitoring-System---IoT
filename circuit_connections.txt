@@ -1,0 +1,27 @@
+
+CIRCUIT CONNECTION GUIDE
+========================
+
+ESP32 Pin Connections:
+----------------------
+
+MPU6050 IMU Sensor:
+VCC  --> 3.3V
+GND  --> GND  
+SCL  --> GPIO 22 (I2C Clock)
+SDA  --> GPIO 21 (I2C Data)
+
+OLED Display (SSD1306):
+VCC  --> 3.3V
+GND  --> GND
+SCL  --> GPIO 22 (I2C Clock) [Shared with MPU6050]
+SDA  --> GPIO 21 (I2C Data)  [Shared with MPU6050]
+
+Power:
+USB  --> ESP32 USB port (for programming and power)
+
+Notes:
+- Both MPU6050 and OLED use I2C, so they share SCL/SDA pins
+- Make sure to use 3.3V for both sensors (not 5V)
+- Pull-up resistors are usually built into the modules
+- Keep wiring short to minimize noise

@@ -1,0 +1,7 @@
+name,purpose
+Arduino IDE,"Code development, compilation, and upload"
+Wokwi Online Simulator,Circuit simulation and code testing
+ThingsBoard CE,IoT cloud platform for data visualization
+Git/GitHub,Version control and project documentation
+Arduino Libraries,"Wire.h, Adafruit_MPU6050.h, Adafruit_SSD1306.h"
+WiFi Libraries,"WiFi.h, PubSubClient.h for MQTT communication"

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Position and Orientation Monitoring System</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <div class="header__title">
+                    <h1>IoT Position and Orientation Monitoring System</h1>
+                    <p class="header__subtitle">Real-time ESP32 MPU6050 Sensor Dashboard</p>
+                </div>
+                <div class="header__status">
+                    <div class="status-group">
+                        <div class="status-indicator" id="deviceStatus">
+                            <div class="status-dot status-dot--success"></div>
+                            <span class="status-label">Device Online</span>
+                        </div>
+                        <div class="status-indicator" id="connectionStatus">
+                            <div class="status-dot status-dot--success"></div>
+                            <span class="status-label">ThingsBoard Connected</span>
+                        </div>
+                        <div class="status-indicator" id="dataStreamStatus">
+                            <div class="status-dot status-dot--success"></div>
+                            <span class="status-label">Data Stream Active</span>
+                        </div>
+                    </div>
+                    <div class="timestamp" id="currentTime">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard">
+        <div class="container">
+            <div class="dashboard__grid">
+                
+                <!-- Left Column - Live Data Display -->
+                <section class="dashboard__section dashboard__section--data">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Live Sensor Data</h3>
+                            <div class="data-rate">
+                                <span id="dataRate">10 Hz</span>
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <!-- Orientation Gauges -->
+                            <div class="sensor-group">
+                                <h4>Orientation (degrees)</h4>
+                                <div class="gauges-grid">
+                                    <div class="gauge-container">
+                                        <div class="gauge" id="rollGauge">
+                                            <div class="gauge__value" id="rollValue">0°</div>
+                                            <div class="gauge__label">Roll</div>
+                                        </div>
+                                    </div>
+                                    <div class="gauge-container">
+                                        <div class="gauge" id="pitchGauge">
+                                            <div class="gauge__value" id="pitchValue">0°</div>
+                                            <div class="gauge__label">Pitch</div>
+                                        </div>
+                                    </div>
+                                    <div class="gauge-container">
+                                        <div class="gauge" id="yawGauge">
+                                            <div class="gauge__value" id="yawValue">0°</div>
+                                            <div class="gauge__label">Yaw</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Accelerometer Data -->
+                            <div class="sensor-group">
+                                <h4>Accelerometer (m/s²)</h4>
+                                <div class="data-bars">
+                                    <div class="data-bar">
+                                        <label>X-Axis</label>
+                                        <div class="bar-container">
+                                            <div class="bar bar--x" id="accelXBar"></div>
+                                            <span class="bar-value" id="accelXValue">0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="data-bar">
+                                        <label>Y-Axis</label>
+                                        <div class="bar-container">
+                                            <div class="bar bar--y" id="accelYBar"></div>
+                                            <span class="bar-value" id="accelYValue">0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="data-bar">
+                                        <label>Z-Axis</label>
+                                        <div class="bar-container">
+                                            <div class="bar bar--z" id="accelZBar"></div>
+                                            <span class="bar-value" id="accelZValue">9.81</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gyroscope Data -->
+                            <div class="sensor-group">
+                                <h4>Gyroscope (°/s)</h4>
+                                <div class="data-bars">
+                                    <div class="data-bar">
+                                        <label>X-Axis</label>
+                                        <div class="bar-container">
+                                            <div class="bar bar--x" id="gyroXBar"></div>
+                                            <span class="bar-value" id="gyroXValue">0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="data-bar">
+                                        <label>Y-Axis</label>
+                                        <div class="bar-container">
+                                            <div class="bar bar--y" id="gyroYBar"></div>
+                                            <span class="bar-value" id="gyroYValue">0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="data-bar">
+                                        <label>Z-Axis</label>
+                                        <div class="bar-container">
+                                            <div class="bar bar--z" id="gyroZBar"></div>
+                                            <span class="bar-value" id="gyroZValue">0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Temperature -->
+                            <div class="sensor-group">
+                                <h4>Temperature</h4>
+                                <div class="temperature-display">
+                                    <span class="temperature-value" id="temperatureValue">25.4°C</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Center Column - 3D Visualization -->
+                <section class="dashboard__section dashboard__section--visualization">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>3D Orientation Visualization</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="visualization-container">
+                                <div class="axis-labels">
+                                    <div class="axis-label axis-label--x">X</div>
+                                    <div class="axis-label axis-label--y">Y</div>
+                                    <div class="axis-label axis-label--z">Z</div>
+                                </div>
+                                <div class="cube-container" id="cubeContainer">
+                                    <div class="cube" id="orientationCube">
+                                        <div class="cube-face cube-face--front">FRONT</div>
+                                        <div class="cube-face cube-face--back">BACK</div>
+                                        <div class="cube-face cube-face--right">RIGHT</div>
+                                        <div class="cube-face cube-face--left">LEFT</div>
+                                        <div class="cube-face cube-face--top">TOP</div>
+                                        <div class="cube-face cube-face--bottom">BOTTOM</div>
+                                    </div>
+                                </div>
+                                <div class="orientation-info">
+                                    <div class="orientation-values">
+                                        <div class="orientation-item">
+                                            <span class="orientation-label">Roll:</span>
+                                            <span class="orientation-value" id="rollDisplay">0°</span>
+                                        </div>
+                                        <div class="orientation-item">
+                                            <span class="orientation-label">Pitch:</span>
+                                            <span class="orientation-value" id="pitchDisplay">0°</span>
+                                        </div>
+                                        <div class="orientation-item">
+                                            <span class="orientation-label">Yaw:</span>
+                                            <span class="orientation-value" id="yawDisplay">0°</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Column - System Information -->
+                <section class="dashboard__section dashboard__section--info">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>System Information</h3>
+                        </div>
+                        <div class="card__body">
+                            <!-- Device Information -->
+                            <div class="info-group">
+                                <h4>Device Status</h4>
+                                <div class="info-items">
+                                    <div class="info-item">
+                                        <span class="info-label">Device ID:</span>
+                                        <span class="info-value" id="deviceId">ESP32-001</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Firmware:</span>
+                                        <span class="info-value" id="firmwareVersion">1.0.0</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Uptime:</span>
+                                        <span class="info-value" id="uptime">1h 0m</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">WiFi Signal:</span>
+                                        <span class="info-value" id="wifiSignal">Strong</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Battery:</span>
+                                        <span class="info-value" id="batteryLevel">85%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Connection Status -->
+                            <div class="info-group">
+                                <h4>Connection Status</h4>
+                                <div class="connection-status">
+                                    <div class="connection-item">
+                                        <div class="status-dot status-dot--success"></div>
+                                        <span>ThingsBoard Cloud</span>
+                                    </div>
+                                    <div class="connection-item">
+                                        <div class="status-dot status-dot--success"></div>
+                                        <span>WiFi Network</span>
+                                    </div>
+                                    <div class="connection-item">
+                                        <div class="status-dot status-dot--success"></div>
+                                        <span>MQTT Broker</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Statistics -->
+                            <div class="info-group">
+                                <h4>Data Statistics</h4>
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="totalSamples">36,000</div>
+                                        <div class="stat-label">Total Samples</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="packetsPerMin">600</div>
+                                        <div class="stat-label">Packets/min</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Calibration Status -->
+                            <div class="info-group">
+                                <h4>Calibration</h4>
+                                <div class="calibration-status">
+                                    <div class="status status--success" id="calibrationStatus">
+                                        Complete
+                                    </div>
+                                    <button class="btn btn--secondary btn--sm" id="calibrateBtn">
+                                        Recalibrate
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Architecture -->
+                    <div class="card mt-8">
+                        <div class="card__header">
+                            <h3>System Architecture</h3>
+                        </div>
+                        <div class="card__body">
+                            <img src="https://pplx-res.cloudinary.com/image/upload/v1751425243/pplx_code_interpreter/105c9402_gzt9rf.jpg" alt="IoT Architecture Diagram" class="architecture-image">
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Bottom Section - Charts and Controls -->
+            <section class="dashboard__bottom">
+                <div class="bottom-grid">
+                    <!-- Historical Charts -->
+                    <div class="card chart-card">
+                        <div class="card__header">
+                            <h3>Historical Orientation Data</h3>
+                            <div class="chart-controls">
+                                <select class="form-control" id="timeRange">
+                                    <option value="1h">Last Hour</option>
+                                    <option value="6h">Last 6 Hours</option>
+                                    <option value="24h">Last 24 Hours</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <canvas id="orientationChart" class="chart-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Control Panel -->
+                    <div class="card control-card">
+                        <div class="card__header">
+                            <h3>System Controls</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="control-buttons">
+                                <button class="btn btn--primary" id="startStopBtn">
+                                    <span id="startStopText">Stop Monitoring</span>
+                                </button>
+                                <button class="btn btn--secondary" id="resetBtn">
+                                    Reset Data
+                                </button>
+                                <button class="btn btn--outline" id="exportBtn">
+                                    Export Data
+                                </button>
+                            </div>
+                            
+                            <!-- Flowchart -->
+                            <div class="flowchart-section">
+                                <h4>System Flowchart</h4>
+                                <img src="https://pplx-res.cloudinary.com/image/upload/v1751425213/pplx_code_interpreter/ef7006f8_vybtae.jpg" alt="IoT System Flowchart" class="flowchart-image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

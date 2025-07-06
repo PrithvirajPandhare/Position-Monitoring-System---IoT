@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "author": "IoT Expert",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-mpu6050",
+      "id": "mpu1",
+      "top": -48,
+      "left": 144,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-ssd1306",
+      "id": "oled1",
+      "top": -120,
+      "left": 288,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "esp:3V3",
+      "mpu1:VCC",
+      "red",
+      []
+    ],
+    [
+      "esp:GND.1",
+      "mpu1:GND",
+      "black",
+      []
+    ],
+    [
+      "esp:D21",
+      "mpu1:SDA",
+      "green",
+      []
+    ],
+    [
+      "esp:D22",
+      "mpu1:SCL",
+      "blue",
+      []
+    ],
+    [
+      "esp:3V3",
+      "oled1:VCC",
+      "red",
+      []
+    ],
+    [
+      "esp:GND.1",
+      "oled1:GND",
+      "black",
+      []
+    ],
+    [
+      "esp:D21",
+      "oled1:SDA",
+      "green",
+      []
+    ],
+    [
+      "esp:D22",
+      "oled1:SCL",
+      "blue",
+      []
+    ]
+  ]
+}
